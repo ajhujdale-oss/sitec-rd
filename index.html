@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SITEC // Centro de Inteligencia y Denuncias de Ciberdelitos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060913;
+            --bg-card: #0e1526;
+            --border-subtle: #1e293b;
+            --border-active: #3b82f6;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                linear-gradient(to right, rgba(30, 41, 59, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.1) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .top-status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding: 0 4px;
+            letter-spacing: 1px;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+            margin-right: 6px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .header-title {
+            margin-bottom: 25px;
+        }
+
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: #070b14;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.25s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-active);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+            background: #090e1a;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            margin-bottom: 0;
+            color: var(--text-main);
+            cursor: pointer;
+            text-transform: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        #userInfoFields {
+            display: grid;
+            gap: 18px;
+            border-left: 2px solid var(--border-subtle);
+            padding-left: 16px;
+            margin-top: 2px;
+        }
+
+        .action-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+            margin-top: 10px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+            font-family: 'JetBrains Mono', monospace;
+            background: #070b14;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .copy-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid var(--border-active);
+            color: var(--primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .security-tip {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-subtle);
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-brand {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-status-bar">
+        <div><span class="live-dot"></span>SITEC // SECURE NODE ACTIVE</div>
+        <div>REPÚBLICA DOMINICANA</div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('report', event)">[+] Nueva Denuncia</button>
+        <button class="tab-btn" onclick="switchTab('track', event)">[Q] Consultar Estatus</button>
+    </div>
+
+    <div class="main-card">
+        
+        <!-- PESTAÑA 1: NUEVA DENUNCIA -->
+        <div id="tab-report" class="tab-content active">
+            <div class="header-title">
+                <h1>Plataforma de Denuncia Ciudadana</h1>
+                <p>Registro automatizado de estafas telemáticas y vectores de ciberdelito.</p>
+            </div>
+
+            <form id="reportForm" class="form-grid">
+                <div class="checkbox-container" onclick="document.getElementById('is_anonymous').click(); event.stopPropagation();">
+                    <input type="checkbox" id="is_anonymous" onchange="toggleAnonymity()">
+                    <label for="is_anonymous">Presentar denuncia de forma anónima</label>
+                </div>
+
+                <div id="userInfoFields">
+                    <div class="form-group">
+                        <label for="full_name">Nombre Completo</label>
+                        <input type="text" id="full_name" placeholder="Ej. Juan Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" placeholder="usuario@dominio.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Número Telefónico</label>
+                        <input type="text" id="phone" placeholder="809-000-0000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="scam_type">Vector o Modalidad del Ciberdelito</label>
+                    <select id="scam_type" required>
+                        <option value="" disabled selected>-- Seleccione la modalidad --</option>
+                        <option value="phishing">Phishing / Portales y Enlaces Falsos</option>
+                        <option value="llamada_falsa">Vishing / Suplantación Telefónica</option>
+                        <option value="redes_sociales">Fraude en Redes Sociales o Marketplace</option>
+                        <option value="piramide">Esquema Piramidal / Inversión Fraudulenta</option>
+                        <option value="otro">Otro tipo de ciberestafa</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fraudster_contact">Contacto o Identificador del Infractor</label>
+                    <input type="text" id="fraudster_contact" placeholder="Número, enlace, perfil social o cuenta bancaria" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Descripción de los Hechos</label>
+                    <textarea id="description" placeholder="Detalle cómo ocurrió la estafa..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount_lost">Monto Económico Afectado (DOP)</label>
+                    <input type="number" step="0.01" id="amount_lost" placeholder="0.00">
+                </div>
+
+                <button type="submit" class="action-btn">Transmitir Denuncia Segura</button>
+            </form>
+            <div id="reportMessage" class="result-box"></div>
+
+            <div class="security-tip">
+                <span>🔒 PROTOCOLO DE CIFRADO ACTIVO // LOS DATOS SENSIBLES ESTÁN PROTEGIDOS BAJO NORMATIVA DE PRIVACIDAD.</span>
+            </div>
+        </div>
+
+        <!-- PESTAÑA 2: CONSULTAR ESTATUS -->
+        <div id="tab-track" class="tab-content">
+            <div class="header-title">
+                <h1>Consulta de Estatus por ID</h1>
+                <p>Introduzca su código de seguimiento para verificar el estado de su expediente.</p>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="search_id">ID de Seguimiento Táctico</label>
+                    <input type="number" id="search_id" placeholder="Ej. 1">
+                </div>
+                <button type="button" class="action-btn" onclick="checkStatus()">Consultar Expediente</button>
+            </div>
+            
+            <div id="trackResult" class="result-box"></div>
+        </div>
+
+    </div>
+
+    <div class="footer-brand">
+        SISTEMA NACIONAL DE INTELIGENCIA CONTRA CIBERDELITOS // GOBIERNO DE LA REPÚBLICA DOMINICANA
+    </div>
+</div>
+
+<script>
+    function switchTab(tabName, evt) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+        if (tabName === 'report') {
+            document.getElementById('tab-report').classList.add('active');
+        } else {
+            document.getElementById('tab-track').classList.add('active');
+        }
+        evt.currentTarget.classList.add('active');
+    }
+
+    function toggleAnonymity() {
+        const isAnon = document.getElementById('is_anonymous').checked;
+        const userFields = document.getElementById('userInfoFields');
+        userFields.style.display = isAnon ? 'none' : 'grid';
+    }
+
+    document.getElementById('reportForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const is_anonymous = document.getElementById('is_anonymous').checked;
+        const data = {
+            is_anonymous: is_anonymous,
+            full_name: is_anonymous ? null : document.getElementById('full_name').value,
+            email: is_anonymous ? null : document.getElementById('email').value,
+            phone: is_anonymous ? null : document.getElementById('phone').value,
+            scam_type: document.getElementById('scam_type').value,
+            fraudster_contact: document.getElementById('fraudster_contact').value,
+            description: document.getElementById('description').value,
+            amount_lost: parseFloat(document.getElementById('amount_lost').value) || 0
+        };
+
+        const msgBox = document.getElementById('reportMessage');
+        msgBox.style.display = 'block';
+        msgBox.className = 'result-box';
+        msgBox.innerText = '[!] Transmitiendo paquete de datos...';
+
+        try {
+            const response = await fetch('/api/reports', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                msgBox.className = 'result-box alert-success';
+                msgBox.innerHTML = `
+                    ✓ Registro exitoso.<br>
+                    Su ID de Seguimiento es: <strong id="generatedId">${result.report.id}</strong><br>
+                    <button class="copy-btn" onclick="copyReportId(${result.report.id})">📋 Copiar ID de Seguimiento</button>
+                `;
+                document.getElementById('reportForm').reset();
+                document.getElementById('userInfoFields').style.display = 'grid';
+            } else {
+                msgBox.className = 'result-box alert-error';
+                msgBox.innerText = 'Error: ' + (result.error || 'No se pudo procesar.');
+            }
+        } catch (err) {
+            console.error(err);
+            msgBox.className = 'result-box alert-error';
+            msgBox.innerText = 'Error de conexión con el servidor.';
+        }
+    });
+
+    function copyReportId(id) {
+        navigator.clipboard.writeText(id).then(() => {
+            alert('¡ID #' + id + ' copiado al portapapeles!');
+        });
+    }
+
+    async function checkStatus() {
+        const id = document.getElementById('search_id').value;
+        const resBox = document.getElementById('trackResult');
+
+        if (!id) {
+            resBox.style.display = 'block';
+            resBox.className = 'result-box alert-error';
+            resBox.innerText = 'Por favor, introduzca un ID válido.';
+            return;
+        }
+
+        resBox.style.display = 'block';
+        resBox.className = 'result-box';
+        resBox.innerText = '[?] Consultando base de datos central...';
+
+        try {
+            const response = await fetch(`/api/reports/${id}`);
+            const result = await response.json();
+
+            if (response.ok) {
+                resBox.className = 'result-box alert-success';
+                resBox.innerHTML = `
+                    <strong>Expediente Encontrado:</strong><br>
+                    - ID: #${result.report.id}<br>
+                    - Vector: ${result.report.scam_type}<br>
+                    - Monto: RD$ ${result.report.amount_lost}<br>
+                    - Fecha: ${new Date(result.report.created_at).toLocaleString()}<br>
+                    - Estatus: <span class="status-badge">${result.report.status}</span>
+                `;
+            } else {
+                resBox.className = 'result-box alert-error';
+                resBox.innerText = result.error || 'Expediente no localizado.';
+            }
+        } catch (err) {
+            console.error(err);
+            resBox.className = 'result-box alert-error';
+            resBox.innerText = 'Error de conexión con el servidor.';
+        }
+    }
+</script>
+
+</body>
+</html>
